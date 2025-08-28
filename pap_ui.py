@@ -189,13 +189,15 @@ with right:
     if mask_file is not None:
         mask_img = _ensure_uint8_mask(_load_image(mask_file))
         ok,msg = _validate_labels(mask_img)
-        if original_file is not None:
-            overlay = _overlay_on_original(_load_image(original_file), mask_vis)
-            st.image(overlay, caption="Overlay on original")
         if not ok: st.error(msg); st.stop()
         mask_vis = _pseudo_color_mask(mask_img)
-        st.image(mask_vis, caption="Segmentation (pseudo-color)")
-
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image(mask_vis, caption="Segmentation (pseudo-color)")
+        if original_file is not None:
+            overlay = _overlay_on_original(_load_image(original_file), mask_vis)
+            with col2:
+                st.image(overlay, caption="Overlay on original")
     else:
         st.info("Upload the segmented/derived mask to begin.")
 
